@@ -7,6 +7,9 @@
 }
 
 :root {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+
     --lime: #00BDAD;
     --dark-lime: #00A193;
     --white: #FFFFFF;
@@ -15,16 +18,32 @@
 
 body {
     background-color: var(--lime);
-    font-size: 10px;
+}
+
+.title {
+    font-size: 7rem;
+    font-weight: 500;
+}
+
+.black-text {
+    color: var(--black);
+}
+
+.dark-lime-text {
+    color: var(--dark-lime);
+}
+
+.white-text {
+    color: var(--white);
 }
 
 .board {
-    width: 300px;
-    height: 300px;
+    width: 30rem;
+    height: 30rem;
     background-color: var(--dark-lime);
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
+    gap: 0.8rem;
 }
 
 .field {
@@ -43,13 +62,13 @@ body {
 
 .field.circle::before {
     height: 70%;
-    border: 8px solid var(--white);
+    border: 0.8rem solid var(--white);
     border-radius: 50%;
 }
 
 .field.cross::before,
 .field.cross::after {
-    height: 10px;
+    height: 1rem;
     background-color: var(--black);
 
 }
