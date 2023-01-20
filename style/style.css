@@ -64,25 +64,40 @@ body {
     margin-left: 15%;
     margin-top: 15%;
     width: 70%;
+
+    transition: 30ms ease-out all;
 }
 
-.field[data-value="circle"]::before {
+.field[data-value="circle"]::before,
+.field[data-value="null"][data-next-move="circle"]:hover::before {
     height: 70%;
     border: 0.8rem solid var(--white);
     border-radius: 50%;
 }
 
 .field[data-value="cross"]::before,
-.field[data-value="cross"]::after {
+.field[data-value="cross"]::after,
+.field[data-value="null"][data-next-move="cross"]:hover::before,
+.field[data-value="null"][data-next-move="cross"]:hover::after {
     height: 1rem;
     background-color: var(--black);
-
 }
 
-.field[data-value="cross"]::before {
+.field[data-value="cross"]::before,
+.field[data-value="null"][data-next-move="cross"]:hover::before {
     transform: translateY(28px) rotate(45deg);
 }
 
-.field[data-value="cross"]::after {
+.field[data-value="cross"]::after,
+.field[data-value="null"][data-next-move="cross"]:hover::after {
     transform: translateY(28px) rotate(-45deg);
+}
+
+.field[data-value="null"][data-next-move="circle"]:hover::before {
+    border: 0.8rem solid var(--dark-lime);
+}
+
+.field[data-value="null"][data-next-move="cross"]:hover::before,
+.field[data-value="null"][data-next-move="cross"]:hover::after {
+    background-color: var(--dark-lime);
 }

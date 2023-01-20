@@ -29,6 +29,25 @@ const Field = (rowIndex, columnIndex, fieldValue = null) => {
   field.setAttribute('data-value', fieldValue);
   field.setAttribute('data-row', rowIndex);
   field.setAttribute('data-column', columnIndex);
+
+  field.addEventListener('mouseover', handleMouseOver);
+  field.addEventListener('mouseout', handleMouseOut);
+
+  events.on('gameFinished', handleFinishGame);
+
+  function handleMouseOver(e) {
+    events.emit('fieldHovered', e.target);
+  }
+
+  function handleMouseOut(e) {
+    events.emit('fieldLeaved', e.target);
+  }
+
+  function handleFinishGame() {
+    field.removeEventListener('mouseover', handleMouseOver);
+    field.removeEventListener('mouseout', handleMouseOut);
+  }
+
   return field;
 };
 
@@ -122,9 +141,9 @@ const gameBoard = ((boardSize) => {
 const gameController = ((board) => {
   let nextMove = 'cross';
 
-  function _handleFieldClicked(data) {
+  function handleFieldClicked(data) {
     board.updateFieldValue(data.rowIndex, data.columnIndex, nextMove);
-    _changeNextMove();
+    changeNextMove();
     console.table(board.getBoard());
     const win = checkWin(board.getBoard());
     if (win) {
@@ -132,7 +151,7 @@ const gameController = ((board) => {
     }
   }
 
-  function _changeNextMove() {
+  function changeNextMove() {
     nextMove = nextMove === 'cross' ? 'circle' : 'cross';
   }
 
@@ -209,5 +228,15 @@ const gameController = ((board) => {
     }
   }
 
-  events.on('fieldClicked', _handleFieldClicked);
+  function handleHoverField(target) {
+    target.setAttribute('data-next-move', nextMove);
+  }
+
+  function handleLeaveField(target) {
+    target.removeAttribute('data-next-move');
+  }
+
+  events.on('fieldClicked', handleFieldClicked);
+  events.on('fieldHovered', handleHoverField);
+  events.on('fieldLeaved', handleLeaveField);
 })(gameBoard);
