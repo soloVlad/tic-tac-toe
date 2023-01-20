@@ -37,6 +37,8 @@ const gameBoard = ((boardSize) => {
   }
 
   function _render() {
+    boardDOM.innerHTML = '';
+
     for (let i = 0; i < boardSize; i++) {
       for (let j = 0; j < boardSize; j++) {
         const field = Field(i, j, board[i][j]);
@@ -44,4 +46,21 @@ const gameBoard = ((boardSize) => {
       }
     }
   }
+
+  function clearBoard() {
+    for (let i = 0; i < boardSize; i++) {
+      for (let j = 0; j < boardSize; j++) {
+        board[i][j] = null;
+      }
+    }
+
+    _render();
+  }
+
+  function updateFieldValue(rowIndex, columnIndex, newValue) {
+    board[rowIndex][columnIndex] = newValue;
+    _render();
+  }
+
+  return { updateFieldValue, clearBoard };
 })(3);
