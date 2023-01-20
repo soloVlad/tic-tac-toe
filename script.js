@@ -35,7 +35,6 @@ const Field = (rowIndex, columnIndex, fieldValue = null) => {
 const gameBoard = ((boardSize) => {
   const board = [];
 
-  // cache DOM
   const boardDOM = document.querySelector('#board');
 
   _init();
@@ -44,6 +43,9 @@ const gameBoard = ((boardSize) => {
     _setBoardSize();
     _createBoard();
     _render();
+
+    boardDOM.addEventListener('click', _handleBoardClick);
+    events.on('gameFinished', _handleFinishGame);
   }
 
   function _createBoard() {
@@ -56,8 +58,8 @@ const gameBoard = ((boardSize) => {
   }
 
   function _setBoardSize() {
-    boardDOM.style.width = `${boardSize * 10} rem`;
-    boardDOM.style.height = `${boardSize * 10} rem`;
+    boardDOM.style.width = `${boardSize * 10}rem`;
+    boardDOM.style.height = `${boardSize * 10}rem`;
     boardDOM.style.gridTemplateColumns = `repeat(${boardSize}, 1fr)`;
   }
 
@@ -72,7 +74,7 @@ const gameBoard = ((boardSize) => {
     }
   }
 
-  function clearBoard() {
+  function _clearBoard() {
     for (let i = 0; i < boardSize; i++) {
       for (let j = 0; j < boardSize; j++) {
         board[i][j] = null;
@@ -80,6 +82,11 @@ const gameBoard = ((boardSize) => {
     }
 
     _render();
+  }
+
+  function refreshBoard() {
+    _clearBoard();
+    boardDOM.addEventListener('click', _handleBoardClick);
   }
 
   function updateFieldValue(rowIndex, columnIndex, newValue) {
@@ -91,7 +98,7 @@ const gameBoard = ((boardSize) => {
     return board.map((row) => [...row]);
   }
 
-  function handleBoardClick(e) {
+  function _handleBoardClick(e) {
     if (!e.target.classList.contains('field') || e.target.getAttribute('data-value') !== 'null') {
       return;
     }
@@ -103,22 +110,101 @@ const gameBoard = ((boardSize) => {
     events.emit('fieldClicked', { rowIndex, columnIndex });
   }
 
-  boardDOM.addEventListener('click', handleBoardClick);
+  function _handleFinishGame() {
+    boardDOM.removeEventListener('click', _handleBoardClick);
+  }
 
-  return { updateFieldValue, clearBoard, getBoard };
+  return {
+    updateFieldValue, refreshBoard, getBoard,
+  };
 })(3);
 
 const gameController = ((board) => {
   let nextMove = 'cross';
 
-  function handleFieldClicked(data) {
+  function _handleFieldClicked(data) {
     board.updateFieldValue(data.rowIndex, data.columnIndex, nextMove);
-    changeNextMove();
+    _changeNextMove();
+    const win = checkWin(board.getBoard());
+    if (win) {
+      events.emit('gameFinished', win);
+    }
   }
 
-  function changeNextMove() {
+  function _changeNextMove() {
     nextMove = nextMove === 'cross' ? 'circle' : 'cross';
   }
 
-  events.on('fieldClicked', handleFieldClicked);
+  function checkWin(currentBoard) {
+    return checkHorizontal(currentBoard)
+      || checkVertical(currentBoard)
+      || checkMainDiagonal(currentBoard)
+      || checkAdditionalDiagonal(currentBoard);
+  }
+
+  function checkHorizontal(currentBoard) {
+    for (let i = 0; i < currentBoard.length; i++) {
+      let sameCounter = 1;
+      for (let j = 1; j < currentBoard.length; j++) {
+        if (currentBoard[i][j - 1] !== currentBoard[i][j]) {
+          return;
+        }
+        sameCounter++;
+      }
+
+      if (sameCounter === currentBoard.length) {
+        return currentBoard[i][0];
+      }
+    }
+  }
+
+  function checkVertical(currentBoard) {
+    for (let i = 0; i < currentBoard.length; i++) {
+      let sameCounter = 1;
+      for (let j = 1; j < currentBoard.length; j++) {
+        if (currentBoard[j - 1][i] !== currentBoard[j][i]) {
+          return;
+        }
+        sameCounter++;
+      }
+
+      if (sameCounter === currentBoard.length) {
+        return currentBoard[0][i];
+      }
+    }
+  }
+
+  function checkMainDiagonal(currentBoard) {
+    for (let i = 1; i < currentBoard.length; i++) {
+      let sameCounter = 1;
+      for (let j = 1; j < currentBoard.length; j++) {
+        if (currentBoard[i - 1][j - 1] !== currentBoard[i][j]) {
+          return;
+        }
+        sameCounter++;
+      }
+
+      if (sameCounter === currentBoard.length) {
+        return currentBoard[0][0];
+      }
+    }
+  }
+
+  function checkAdditionalDiagonal(currentBoard) {
+    for (let i = 1; i < currentBoard.length; i++) {
+      let sameCounter = 1;
+      for (let j = currentBoard.length - 1; j > 0; j--) {
+        if (currentBoard[i - 1][j] !== currentBoard[i][j - 1]) {
+          return;
+        }
+        sameCounter++;
+      }
+
+      if (sameCounter === currentBoard.length) {
+        return currentBoard[0][currentBoard.length - 1];
+      }
+    }
+  }
+
+  events.on('fieldClicked', _handleFieldClicked);
 })(gameBoard);
