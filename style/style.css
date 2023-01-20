@@ -53,6 +53,10 @@ body {
     background-color: var(--lime);
 }
 
+.field:hover {
+    cursor: pointer;
+}
+
 .field::before,
 .field::after {
     position: absolute;

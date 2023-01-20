@@ -125,6 +125,7 @@ const gameController = ((board) => {
   function _handleFieldClicked(data) {
     board.updateFieldValue(data.rowIndex, data.columnIndex, nextMove);
     _changeNextMove();
+    console.table(board.getBoard());
     const win = checkWin(board.getBoard());
     if (win) {
       events.emit('gameFinished', win);
@@ -146,10 +147,11 @@ const gameController = ((board) => {
     for (let i = 0; i < currentBoard.length; i++) {
       let sameCounter = 1;
       for (let j = 1; j < currentBoard.length; j++) {
-        if (currentBoard[i][j - 1] !== currentBoard[i][j]) {
-          return;
+        if (currentBoard[i][j - 1] === currentBoard[i][j] && currentBoard[i][j]) {
+          sameCounter++;
+        } else {
+          break;
         }
-        sameCounter++;
       }
 
       if (sameCounter === currentBoard.length) {
@@ -162,10 +164,11 @@ const gameController = ((board) => {
     for (let i = 0; i < currentBoard.length; i++) {
       let sameCounter = 1;
       for (let j = 1; j < currentBoard.length; j++) {
-        if (currentBoard[j - 1][i] !== currentBoard[j][i]) {
-          return;
+        if (currentBoard[j - 1][i] === currentBoard[j][i] && currentBoard[j][i]) {
+          sameCounter++;
+        } else {
+          break;
         }
-        sameCounter++;
       }
 
       if (sameCounter === currentBoard.length) {
@@ -175,34 +178,34 @@ const gameController = ((board) => {
   }
 
   function checkMainDiagonal(currentBoard) {
-    for (let i = 1; i < currentBoard.length; i++) {
-      let sameCounter = 1;
-      for (let j = 1; j < currentBoard.length; j++) {
-        if (currentBoard[i - 1][j - 1] !== currentBoard[i][j]) {
-          return;
-        }
-        sameCounter++;
-      }
+    let sameCounter = 1;
 
-      if (sameCounter === currentBoard.length) {
-        return currentBoard[0][0];
+    for (let i = 1; i < currentBoard.length; i++) {
+      if (currentBoard[i - 1][i - 1] === currentBoard[i][i] && currentBoard[i][i]) {
+        sameCounter++;
+      } else {
+        break;
       }
+    }
+
+    if (sameCounter === currentBoard.length) {
+      return currentBoard[0][0];
     }
   }
 
   function checkAdditionalDiagonal(currentBoard) {
-    for (let i = 1; i < currentBoard.length; i++) {
-      let sameCounter = 1;
-      for (let j = currentBoard.length - 1; j > 0; j--) {
-        if (currentBoard[i - 1][j] !== currentBoard[i][j - 1]) {
-          return;
-        }
-        sameCounter++;
-      }
+    let sameCounter = 1;
 
-      if (sameCounter === currentBoard.length) {
-        return currentBoard[0][currentBoard.length - 1];
+    for (let i = 1; i < currentBoard.length; i++) {
+      if (currentBoard[i - 1][currentBoard.length - i] === currentBoard[i][currentBoard.length - i - 1] && currentBoard[i][currentBoard.length - i - 1]) {
+        sameCounter++;
+      } else {
+        break;
       }
+    }
+
+    if (sameCounter === currentBoard.length) {
+      return currentBoard[0][currentBoard.length - 1];
     }
   }
 
