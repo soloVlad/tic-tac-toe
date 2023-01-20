@@ -62,23 +62,23 @@ body {
     width: 70%;
 }
 
-.field.circle::before {
+.field[data-value="circle"]::before {
     height: 70%;
     border: 0.8rem solid var(--white);
     border-radius: 50%;
 }
 
-.field.cross::before,
-.field.cross::after {
+.field[data-value="cross"]::before,
+.field[data-value="cross"]::after {
     height: 1rem;
     background-color: var(--black);
 
 }
 
-.field.cross::before {
+.field[data-value="cross"]::before {
     transform: translateY(28px) rotate(45deg);
 }
 
-.field.cross::after {
+.field[data-value="cross"]::after {
     transform: translateY(28px) rotate(-45deg);
 }
