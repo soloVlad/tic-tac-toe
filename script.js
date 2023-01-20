@@ -240,3 +240,13 @@ const gameController = ((board) => {
   events.on('fieldHovered', handleHoverField);
   events.on('fieldLeaved', handleLeaveField);
 })(gameBoard);
+
+const menu = (() => {
+  const refreshButton = document.querySelector('#refresh');
+
+  refreshButton.addEventListener('click', handleRefresh);
+
+  function handleRefresh() {
+    gameBoard.refreshBoard();
+  }
+})();

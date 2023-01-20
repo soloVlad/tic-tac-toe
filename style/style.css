@@ -101,3 +101,15 @@ body {
 .field[data-value="null"][data-next-move="cross"]:hover::after {
     background-color: var(--dark-lime);
 }
+
+.refresh-button {
+    display: block;
+    margin: 0 auto;
+    width: 10rem;
+    transition: 0.1s ease-out all;
+}
+
+.refresh-button:hover {
+    cursor: pointer;
+    transform: scale(1.2);
+}
