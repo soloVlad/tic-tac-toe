@@ -33,7 +33,7 @@ const gameBoard = ((boardSize) => {
   function _setBoardSize() {
     boardDOM.style.width = `${boardSize * 10} rem`;
     boardDOM.style.height = `${boardSize * 10} rem`;
-    boardDOM.style.gridTemplateColumns = `repeat(${boardSize}, 1fr);`;
+    boardDOM.style.gridTemplateColumns = `repeat(${boardSize}, 1fr)`;
   }
 
   function _render() {
@@ -62,5 +62,9 @@ const gameBoard = ((boardSize) => {
     _render();
   }
 
-  return { updateFieldValue, clearBoard };
+  function getBoard() {
+    return board.map((row) => [...row]);
+  }
+
+  return { updateFieldValue, clearBoard, getBoard };
 })(3);
